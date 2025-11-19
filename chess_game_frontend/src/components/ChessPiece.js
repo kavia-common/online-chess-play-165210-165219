@@ -1,86 +1,84 @@
 import React from 'react';
 
-// SVGs generated for Ocean Professional style (blue/amber, clean modern)
-const pieceSvgs = {
-  wK: (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
-      <circle cx="22.5" cy="22.5" r="20" fill="#E0EDFF" stroke="#3978F5" strokeWidth="3"/>
-      <text x="22.5" y="28" textAnchor="middle" fontWeight="bold" fontSize="22" fill="#3978F5">♔</text>
-    </svg>
-  ),
-  wQ: (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
-      <circle cx="22.5" cy="22.5" r="20" fill="#F7F8FA" stroke="#2563EB" strokeWidth="3"/>
-      <text x="22.5" y="28" textAnchor="middle" fontWeight="bold" fontSize="22" fill="#2563EB">♕</text>
-    </svg>
-  ),
-  wR: (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
-      <circle cx="22.5" cy="22.5" r="20" fill="#E8F1FD" stroke="#2563EB" strokeWidth="3"/>
-      <text x="22.5" y="28" textAnchor="middle" fontWeight="bold" fontSize="22" fill="#2563EB">♖</text>
-    </svg>
-  ),
-  wB: (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
-      <circle cx="22.5" cy="22.5" r="20" fill="#FDF5E7" stroke="#F59E0B" strokeWidth="3"/>
-      <text x="22.5" y="28" textAnchor="middle" fontWeight="bold" fontSize="22" fill="#F59E0B">♗</text>
-    </svg>
-  ),
-  wN: (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
-      <circle cx="22.5" cy="22.5" r="20" fill="#F8FAFF" stroke="#3978F5" strokeWidth="3"/>
-      <text x="22.5" y="28" textAnchor="middle" fontWeight="bold" fontSize="22" fill="#3978F5">♘</text>
-    </svg>
-  ),
-  wP: (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
-      <circle cx="22.5" cy="22.5" r="20" fill="#F8FAFF" stroke="#3978F5" strokeWidth="2"/>
-      <text x="22.5" y="28" textAnchor="middle" fontWeight="bold" fontSize="20" fill="#3978F5">♙</text>
-    </svg>
-  ),
-  bK: (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
-      <circle cx="22.5" cy="22.5" r="20" fill="#314559" stroke="#2563EB" strokeWidth="3"/>
-      <text x="22.5" y="28" textAnchor="middle" fontWeight="bold" fontSize="22" fill="#ffffff">♚</text>
-    </svg>
-  ),
-  bQ: (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
-      <circle cx="22.5" cy="22.5" r="20" fill="#344960" stroke="#3978F5" strokeWidth="3"/>
-      <text x="22.5" y="28" textAnchor="middle" fontWeight="bold" fontSize="22" fill="#ffffff">♛</text>
-    </svg>
-  ),
-  bR: (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
-      <circle cx="22.5" cy="22.5" r="20" fill="#212B36" stroke="#2563EB" strokeWidth="3"/>
-      <text x="22.5" y="28" textAnchor="middle" fontWeight="bold" fontSize="22" fill="#ffffff">♜</text>
-    </svg>
-  ),
-  bB: (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
-      <circle cx="22.5" cy="22.5" r="20" fill="#2F2D36" stroke="#F59E0B" strokeWidth="3"/>
-      <text x="22.5" y="28" textAnchor="middle" fontWeight="bold" fontSize="22" fill="#F59E0B">♝</text>
-    </svg>
-  ),
-  bN: (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
-      <circle cx="22.5" cy="22.5" r="20" fill="#34374C" stroke="#3978F5" strokeWidth="3"/>
-      <text x="22.5" y="28" textAnchor="middle" fontWeight="bold" fontSize="22" fill="#ffffff">♞</text>
-    </svg>
-  ),
-  bP: (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
-      <circle cx="22.5" cy="22.5" r="20" fill="#26344D" stroke="#3978F5" strokeWidth="2"/>
-      <text x="22.5" y="28" textAnchor="middle" fontWeight="bold" fontSize="20" fill="#ffffff">♟</text>
-    </svg>
-  ),
+// Import SVGs as React components for the realistic set
+function importAll(r) {
+  const map = {};
+  r.keys().forEach((key) => {
+    const nm = key.replace('./', '').replace('.svg', '');
+    map[nm] = r(key).default;
+  });
+  return map;
+}
+
+const realisticAssets = importAll(require.context('../assets/pieces', false, /\.svg$/));
+
+// Simple unicode fallback for "classic" option
+const unicodePiece = {
+  wK: '♔', wQ: '♕', wR: '♖', wB: '♗', wN: '♘', wP: '♙',
+  bK: '♚', bQ: '♛', bR: '♜', bB: '♝', bN: '♞', bP: '♟',
+};
+
+function getPieceAlt(piece) {
+  if (!piece) return '';
+  const color = piece[0] === 'w' ? 'White' : 'Black';
+  const type =
+    piece[1] === 'K' ? 'King' :
+    piece[1] === 'Q' ? 'Queen' :
+    piece[1] === 'R' ? 'Rook' :
+    piece[1] === 'N' ? 'Knight' :
+    piece[1] === 'B' ? 'Bishop' :
+    'Pawn';
+  return `${color} ${type}`;
 }
 
 // PUBLIC_INTERFACE
-function ChessPiece({ piece }) {
+/** ChessPiece: renders a chess piece using SVG assets or unicode fallback.
+ * Props:
+ * - piece: e.g. "wK" "bQ" etc.
+ * - theme: "classic" | "realistic" (defaults to realistic)
+ */
+function ChessPiece({ piece, theme = 'realistic' }) {
+  if (!piece) return null;
+  let Content = null;
+
+  if (theme === "realistic" && realisticAssets[piece]) {
+    Content = (
+      // Responsive SVG: uses <img> for accessibility and srcset/alt
+      <img
+        src={realisticAssets[piece]}
+        draggable={false}
+        className="chess-piece-img"
+        alt={getPieceAlt(piece)}
+        width="100%"
+        height="100%"
+        style={{ display: 'block', pointerEvents: 'none', maxWidth: '100%', maxHeight: '100%' }}
+        loading="eager"
+      />
+    );
+  }
+  else {
+    // Classic fallback (unicode)
+    Content = (
+      <span
+        aria-label={getPieceAlt(piece)}
+        style={{
+          fontSize: '2.5em',
+          color: piece[0] === 'w' ? '#2563EB' : '#212B36',
+          textShadow: '0 2px 8px #3978f533',
+        }}
+      >
+        {unicodePiece[piece]}
+      </span>
+    );
+  }
   return (
-    <span className="chess-piece" aria-label={piece}>
-      {pieceSvgs[piece]}
+    <span
+      className="chess-piece"
+      aria-label={getPieceAlt(piece)}
+      tabIndex={-1}
+      role="img"
+    >
+      {Content}
     </span>
   );
 }
