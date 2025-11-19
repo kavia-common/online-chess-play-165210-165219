@@ -51,7 +51,14 @@ function ChessPiece({ piece, theme = 'realistic' }) {
         alt={getPieceAlt(piece)}
         width="100%"
         height="100%"
-        style={{ display: 'block', pointerEvents: 'none', maxWidth: '100%', maxHeight: '100%' }}
+        style={{
+          display: 'block',
+          pointerEvents: 'none',
+          maxWidth: '100%',
+          maxHeight: '100%',
+          minWidth: 0,
+          minHeight: 0
+        }}
         loading="eager"
       />
     );
@@ -62,9 +69,9 @@ function ChessPiece({ piece, theme = 'realistic' }) {
       <span
         aria-label={getPieceAlt(piece)}
         style={{
-          fontSize: '2.5em',
+          fontSize: '2em',
           color: piece[0] === 'w' ? '#2563EB' : '#212B36',
-          textShadow: '0 2px 8px #3978f533',
+          textShadow: '0 1.5px 6px #3978f533',
         }}
       >
         {unicodePiece[piece]}

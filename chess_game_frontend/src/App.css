@@ -244,28 +244,28 @@
 
 /* Pieces */
 .chess-piece {
-  width: 91%;
-  height: 91%;
+  width: 82%;
+  height: 82%;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
   pointer-events: none;
-  /* Subtle 3D effect for realistic: blue highlight, soft base shadow */
-  filter: drop-shadow(0 3px 10px rgba(37,99,235,0.09))
-          drop-shadow(0 1px 1.5px #212b3621);
-  transition: filter 0.22s;
-  /* Makes pieces "pop" for modern realism */
+  /* Slightly lighter 3D shadows to suit smaller pieces */
+  filter: drop-shadow(0 2px 6px rgba(37,99,235,0.10))
+          drop-shadow(0 0.5px 1px #212b3621);
+  transition: filter 0.2s;
 }
 .chess-piece:hover,
 .chess-board-square.selected .chess-piece {
-  filter: drop-shadow(0 5px 17px #2563eb30)
-          drop-shadow(0 2px 5px #11182712)
+  filter: drop-shadow(0 4px 11px #2563eb23)
+          drop-shadow(0 1px 2px #11182709)
           brightness(1.05);
   z-index: 2;
 }
-.chess-piece svg, .chess-piece img.chess-piece-img {
-  width: 100%; 
+.chess-piece svg,
+.chess-piece img.chess-piece-img {
+  width: 100%;
   height: 100%;
   display: block;
   max-width: 100%;
@@ -273,9 +273,8 @@
   object-fit: contain;
   pointer-events: none;
   aspect-ratio: 1/1;
-  /* Blend with board for Ocean Pro */
   background: transparent;
-  border-radius: 11px;
+  border-radius: 10px;
 }
 .chess-piece-img {
   image-rendering: auto;
@@ -283,6 +282,17 @@
   image-rendering: -webkit-optimize-contrast;
   will-change: filter, opacity;
 }
+@media (max-width: 768px) {
+  .chess-piece {
+    width: 80%;
+    height: 80%;
+  }
+  .chess-piece svg,
+  .chess-piece img.chess-piece-img {
+    border-radius: 8px;
+  }
+}
+
 
 /* Move history panel */
 .move-history-panel {
