@@ -5,6 +5,7 @@ import ChessBoard from './components/ChessBoard';
 import MoveHistoryPanel from './components/MoveHistoryPanel';
 import PlayerPanel from './components/PlayerPanel';
 import GameControls from './components/GameControls';
+import CapturedPanel from './components/CapturedPanel';
 import {
   initialBoard,
   getInitialState,
@@ -35,6 +36,9 @@ function App() {
   const [board, setBoard] = useState(cloneBoard(initialBoard));
   const [gameState, setGameState] = useState(getInitialState());
   const [history, setHistory] = useState([]);
+  // Captured pieces: whiteCaptured (by black), blackCaptured (by white)
+  const [whiteCaptured, setWhiteCaptured] = useState([]); // Array of "bQ" etc. (pieces captured by White)
+  const [blackCaptured, setBlackCaptured] = useState([]); // Array of "wQ" etc. (pieces captured by Black)
   // UI state
   const [selected, setSelected] = useState(null);
   const [legalMoves, setLegalMoves] = useState([]);
@@ -46,6 +50,8 @@ function App() {
     setBoard(cloneBoard(initialBoard));
     setGameState(getInitialState());
     setHistory([]);
+    setWhiteCaptured([]);
+    setBlackCaptured([]);
     setSelected(null);
     setLegalMoves([]);
     setPromotionMove(null);
@@ -112,7 +118,7 @@ function App() {
     }
   }
 
-  // Apply a move, update board/state/history
+  // Apply a move, update board/state/history and exposures captured logic
   function doMove(move) {
     const res = applyMove(board, move, gameState);
     const statusObj = getGameStatus(res.board, res.state);
@@ -133,6 +139,13 @@ function App() {
       draw: !!statusObj.draw
     });
     setHistory([...history, { move, san }]);
+
+    // Captured piece logic: update side arrays
+    if (res.captured) {
+      if (res.captured[0] === "w") setBlackCaptured(k => [...k, res.captured]);
+      else if (res.captured[0] === "b") setWhiteCaptured(k => [...k, res.captured]);
+    }
+
     setSelected(null);
     setLegalMoves([]);
   }
@@ -166,7 +179,11 @@ function App() {
   return (
     <div className="chess-root-app" style={{ background: 'var(--background)' }}>
       <main className="chess-app-main">
-        <div className="chess-side-panel left">
+
+        {/* Left: Black side panel */}
+        <div className="chess-side-panel left" style={{gap: '0.3rem', alignItems: 'center'}}>
+          {/* Show black's captured panel on left - white's captures */}
+          <CapturedPanel pieces={whiteCaptured} color="w" />
           <PlayerPanel
             color="b"
             active={gameState.turn === 'b' && !gameState.resign && !gameState.winner}
@@ -174,7 +191,10 @@ function App() {
             name="Black"
           />
         </div>
+
+        {/* Center: board and white panel below, plus captured */}
         <section className="chess-center-panel">
+
           <div className="chess-top-bar">
             <GameControls
               onRestart={handleRestart}
@@ -184,6 +204,7 @@ function App() {
               status={gameState.status}
             />
           </div>
+
           <ChessBoard
             board={board}
             selected={selected}
@@ -194,6 +215,7 @@ function App() {
             turn={gameState.turn}
             orientation={orientation}
           />
+
           {promotionMove && (
             <div className="promotion-popup-backdrop" tabIndex={-1} onClick={() => setPromotionMove(null)}>
               <div className="promotion-popup" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true">
@@ -213,15 +235,20 @@ function App() {
               </div>
             </div>
           )}
+
           <div id="aria-live-game-status" aria-live="polite" className="sr-only" />
+          {/* White player panel, then captured (black's captures) */}
           <PlayerPanel
             color="w"
             active={gameState.turn === 'w' && !gameState.resign && !gameState.winner}
             inCheck={gameState.status === 'check' && gameState.turn === 'w'}
             name="White"
           />
+          <CapturedPanel pieces={blackCaptured} color="b" />
         </section>
-        <aside className="chess-side-panel right">
+
+        {/* Right: Move history panel */}
+        <aside className="chess-side-panel right" style={{alignItems:'flex-start',justifyContent:'flex-start'}}>
           <MoveHistoryPanel moves={history} />
         </aside>
       </main>

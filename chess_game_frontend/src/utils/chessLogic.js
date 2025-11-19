@@ -194,14 +194,29 @@ function isAttacked(board, x, y, enemyColor) {
   return false;
 }
 
-// Applies a move and returns the new board and game state
+/** 
+ * PUBLIC_INTERFACE
+ * Applies a move and returns the new board, game state, and capture details (if any).
+ * Now returns { board, state, captured }, where `captured` is the piece code ("wN", etc.)
+ * or null if no capture.
+ */
 function applyMove(board, move, prevState) {
   let newBoard = cloneBoard(board);
   let state = { ...prevState };
+  let captured = null;
 
   const [fx, fy] = move.from;
   const [tx, ty] = move.to;
   const piece = board[fy][fx];
+
+  // Capture logic (store the piece before it's replaced/removed)
+  if (move.isEnPassant) {
+    // En passant: captured piece is the pawn behind the target square
+    captured = board[fy][tx];
+  } else if (board[ty][tx]) {
+    // Direct capture
+    captured = board[ty][tx];
+  }
 
   // Move piece
   newBoard[fy][fx] = null; newBoard[ty][tx] = piece;
@@ -268,7 +283,8 @@ function applyMove(board, move, prevState) {
       halfmoveClock,
       fullmoveNumber,
       draw: false
-    }
+    },
+    captured
   };
 }
 
