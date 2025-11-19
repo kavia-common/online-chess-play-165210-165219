@@ -1,7 +1,20 @@
 import React from 'react';
 import ChessPiece from './ChessPiece';
 
-// PUBLIC_INTERFACE
+/** 
+ * PUBLIC_INTERFACE
+ * ChessBoard: renders the chess board with pieces, selection, legal moves, and theming.
+ * Props:
+ * - board: 8x8 array of pieces
+ * - selected: [x, y] or null
+ * - legalMoves: array of move objects for current piece
+ * - onSquareClick: fn([x,y])
+ * - lastMove: { from, to, ... }
+ * - checkSquare: [x,y] of king in check
+ * - turn: "w" | "b"
+ * - orientation: "w" | "b" (board orientation)
+ * - theme: "marble" | "classic" (defaults to "marble")
+ */
 function ChessBoard({
   board,
   selected,
@@ -10,7 +23,8 @@ function ChessBoard({
   lastMove,
   checkSquare,
   turn,
-  orientation = 'w' // 'w' or 'b'
+  orientation = 'w', // 'w' or 'b'
+  theme = 'marble'
 }) {
   // Reverses board for black orientation if needed
   const renderRows = () => {
@@ -61,8 +75,10 @@ function ChessBoard({
     return rows;
   };
 
+  const themeBoardClass = theme === 'marble' ? 'marble-board' : '';
+
   return (
-    <div className="chess-board" role="grid" aria-label="Chess board">
+    <div className={`chess-board ${themeBoardClass}`} role="grid" aria-label="Chess board">
       {renderRows()}
     </div>
   );

@@ -211,6 +211,57 @@
   font-size: 1.5rem;
   position: relative;
 }
+/* --- Begin Marble Theme --- */
+:root {
+  --marble-light-bg: url('./assets/board/marble-light.svg');
+  --marble-dark-bg: url('./assets/board/marble-dark.svg');
+}
+
+.marble-board .chess-board-square.light {
+  background: var(--marble-light-bg), #f7fafc;
+  background-size: cover;
+  background-repeat: repeat;
+  background-blend-mode: lighten;
+  /* Slight overlay for visual texture, ensure coordinate/overlay contrast */
+}
+.marble-board .chess-board-square.dark {
+  background: var(--marble-dark-bg), #bcd3ef;
+  background-size: cover;
+  background-repeat: repeat;
+  background-blend-mode: multiply;
+}
+
+.marble-board .chess-board-square.selected {
+  box-shadow: 0 0 0 3px var(--secondary, #f59e0b), 0 4px 14px rgba(245, 158, 11, 0.15);
+  z-index: 6;
+}
+.marble-board .chess-board-square.legal::after {
+  background: #F59E0B55;
+}
+.marble-board .chess-board-square.last {
+  /* Keep highlight visible on marble */
+  background: linear-gradient(132deg, #c4e2ff99 70%, #ffeedd88 100%), var(--marble-light-bg);
+  background-size: cover, cover;
+  background-blend-mode: lighten;
+}
+.marble-board .chess-board-square.check {
+  animation: check-flash 0.4s linear 2;
+  background: #f00a url('./assets/board/marble-dark.svg');
+  background-size: cover;
+  background-blend-mode: multiply;
+}
+.marble-board .chess-board-square {
+  /* Ensure high-contrast border for overlays and selection */
+  border-radius: 0 !important;
+  outline: none;
+}
+@media (max-width: 768px) {
+  .marble-board .chess-board-square {
+    border-radius: 0 !important;
+  }
+}
+/* --- End Marble Theme --- */
+
 .chess-board-square.light { background: #f1f5fa; }
 .chess-board-square.dark { background: #bcd3ef;}
 

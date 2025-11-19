@@ -214,6 +214,7 @@ function App() {
             checkSquare={checkSquare}
             turn={gameState.turn}
             orientation={orientation}
+            theme="marble"
           />
 
           {promotionMove && (
